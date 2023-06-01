@@ -52,6 +52,34 @@ namespace AdminSiteAPI.Controllers
             }
             return usr;
         }
-        
+        [HttpPost]
+        [Route("api/Admin/addUser")]
+        public int addUser([FromBody] User usr)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=RANA\SQLEXPRESS;Initial Catalog=AdminSiteDB;Integrated Security=True");
+            con.Open();
+            string sqlStr = "insert into Users values(@id,@username,@companyID,@companyName,@userType)";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            cmd.Parameters.AddWithValue("@id", usr.Id);
+            cmd.Parameters.AddWithValue("@username", usr.UserName);
+            cmd.Parameters.AddWithValue("@companyID", usr.CompanyID);
+            cmd.Parameters.AddWithValue("@companyName", usr.CompanyName);
+            cmd.Parameters.AddWithValue("@userType", usr.UserType);
+            int result = cmd.ExecuteNonQuery();
+            return result;
+        }
+        [HttpDelete]
+        [Route("api/Admin/deleteUser/{id}")]
+        public int deleteUser(int id)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=RANA\SQLEXPRESS;Initial Catalog=AdminSiteDB;Integrated Security=True");
+            con.Open();
+            string sqlStr = "delete from Users where id=@id";
+            SqlCommand cmd = new SqlCommand(sqlStr, con);
+            var usr = getuserListbyID(id);
+            cmd.Parameters.AddWithValue("@id", usr.Id);
+            int result = cmd.ExecuteNonQuery();
+            return result;
+        }
     }
 }
